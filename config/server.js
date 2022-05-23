@@ -19,8 +19,8 @@ class Server {
     }
 
     routes() {
-        this.app.use(this.rutaProduct, require('../routes/product'));
-        this.app.use(this.rutaShoppingCar, require('../routes/shoppingCar'));
+        this.app.use(this.rutaProduct, require('../routes/productRouter'));
+        this.app.use(this.rutaShoppingCar, require('../routes/shoppingCarRouter'));
         this.app.use(this.rutaGrap, graphqlHTTP({
             schema: shoppingSchema,
             graphiql: true,

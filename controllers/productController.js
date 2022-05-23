@@ -8,10 +8,11 @@ const getProductByCode = async (req = request, res = response) => {
     const param = req.params.id;
     logger.info("Consultado productos con code :", param);
     try {
-
+      
+      
         const product = await productService.getProductByCode(param);
         logger.info("Produc controller", product);
-
+        //Si existe
         if (product) {
             res.status('200').json({
                 msg: 'Consultado producto por codigo',
@@ -19,13 +20,17 @@ const getProductByCode = async (req = request, res = response) => {
             });
             logger.info('%s %s', product.code, product.name);
         }
-
+        //Si es un numero valido pero no existe
         if (!product) {
             logger.err('No se encontro el producto',);
-            res.status('400').json({
+            res.status('404').json({
                 msg: "Pruducto no encontrado"
             });
         }
+        //Validacion de formato
+      
+
+
     } catch (error) {
 
         logger.err('Error interno',);
@@ -36,9 +41,9 @@ const getProductByCode = async (req = request, res = response) => {
 }
 
 const gellAllProduct = async (req = request, res = response) => {
- 
+
     try {
-      const products = await productService.gellAllProduct();
+        const products = await productService.gellAllProduct();
 
         if (products) {
 
