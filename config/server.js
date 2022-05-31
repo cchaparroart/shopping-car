@@ -19,8 +19,7 @@ class Server {
         this.middlewares();
         this.routes();
         this.middlewaresError();
-       
-
+    
     }
 
     routes() {
@@ -37,21 +36,14 @@ class Server {
         this.app.use(express.static('public'));
         this.app.use(cors());
         this.app.use(express.json());
-
-
     }
 
     middlewaresError() {
-
         this.app.use(valideError);
-
     }
 
     async conectDB() {
         await dbConnection();
-
-
-
     }
 
     listen() {

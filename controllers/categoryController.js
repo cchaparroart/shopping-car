@@ -2,99 +2,79 @@ const { response, request } = require('express');
 const logger = require('@condor-labs/logger');
 const categoryService = require('../service/categoryService');
 
+const getCategoryByCode = async (req = request, res = response, next) => {
 
-const getCategoryByCode = async (req = request, res = response) => {
     const param = req.params.id;
-
     logger.info("Consultado categoria :", param);
+
     try {
         const category = await categoryService.getCategoryByCode(param);
-        logger.info("category controller", category);
-        //Si existe
+        logger.info("Se encontro la categoria :", category);
+
         if (category) {
-            res.status('200').json({
-                msg: 'Consultando category por code',
-                category,
+            res.status(200).send({
+                category
             });
         }
-        //Si es un numero valido pero no existe
+
         if (!category) {
             logger.err('No se encontro el producto',);
-            res.status('404').json({
-                msg: "Category no encontrado"
+            res.status(404).send({
+                category
             });
         }
-    } catch (error) {
-
-
-        if (error.name === 'MongoError') {
-            res.status('400').json({
-                code: error.code,
-                name: error.name,
-                msg:  error.message
-            });
-        }
-
-    
-        res.status('500').json({
-            msg: error.message
-        });
+    }
+    catch (error) {
+        return next(error);
     }
 }
 
-const updateCategory = async (req = request, res = response) => {
+const updateCategory = async (req = request, res = response, next) => {
+
     const body = req.body;
     const { code } = body;
+
     logger.info("Actualizando :--->", body, code);
     try {
         const category = await categoryService.updateCategory(code, body);
         if (category) {
-            res.status('200').json({
-                msg: 'Categoria actualizada',
-                category,
+            res.status(200).send({
+                category
             });
             logger.info(category);
         }
         if (!category) {
-            logger.err('Categoria no existe',);
-            res.status('400').json({
+
+            res.status(400).send({
                 msg: "Categoria no encontrado"
             });
         }
     } catch (error) {
-       
-        if (error.name === 'MongoError') {
-            res.status('400').json({
-                code: error.code,
-                name: error.name,
-                msg:  error.message
-            });
-        }
+        return next(error);
+    }
 
+}
 
-        res.status('500').json({
-            msg: error.message
+const saveCategory = async (req, res = response, next) => {
+
+    try {
+
+        const body = req.body;
+        const categorySave = await categoryService.saveCategory(body);
+
+        console.log("Se guardo la categoria", categorySave);
+        res.status(200).send({
+            categorySave
         });
+
+    } catch (error) {
+
+        return next(error);
     }
 }
 
-const saveCategory = async (req, res = response) => {
 
-    const body = req.body;
-    
-        const categorySave = await categoryService.saveCategory(body);
-
-        console.log("Entre al post", categorySave);
-        res.status('200').json({
-            msn: 'Catogoria guardado',
-            categorySave,
-        });
-
-
-}
-
-
-const gellAllCategory = async (req = request, res = response) => {
+const gellAllCategory = async (req = request, res = response, next) => {
 
     try {
         const { limite = 5, desde = 0 } = req.query;
@@ -102,29 +82,18 @@ const gellAllCategory = async (req = request, res = response) => {
 
         if (categorys) {
 
-            logger.info('Consultando todas la categorias', categorys.length);
-            res.status('200').json({
-                msg: 'Consultado todas la categorias',
-                categorys,
+            logger.info('Consultando todas la categorias :', categorys.length);
+            res.status(200).send({
+                categorys
             });
         }
 
     } catch (error) {
 
-        if (error.name === 'MongoError') {
-            res.status('400').json({
-                code: error.code,
-                name: error.name,
-                msg:  error.message
-            });
-        }
-
-        logger.err('Error interno',);
-        res.status('500').json({
-            msg: error,
-
-        });
+        return next(error);
     }
+
+
 }
 
 module.exports = { getCategoryByCode, updateCategory, gellAllCategory, saveCategory }

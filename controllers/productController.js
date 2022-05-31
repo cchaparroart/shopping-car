@@ -1,147 +1,90 @@
-const { response, request } = require('express');
+const { response, request  } = require('express');
 const logger = require('@condor-labs/logger');
 const productService = require('../service/productService');
 
 
-const getProductByCode = async (req = request, res = response) => {
+const getProductByCode = async (req = request, res = response, next) => {
 
     const param = req.params.id;
     logger.info("Consultado productos con code :", param);
     try {
         const product = await productService.getProductByCode(param);
-        logger.info("Produc controller", product);
-        //Si existe
+        logger.info("Product controller -->", product);
+     
         if (product) {
-            res.status('200').json({
-                msg: 'Consultado producto por codigo',
-                product,
+            res.status(200).send({           
+                product
             });
-            logger.info('%s %s', product.code, product.name);
-        }
-        //Si es un numero valido pero no existe
-        if (!product) {
-            logger.err('No se encontro el producto',);
-            res.status('404').json({
-                msg: "Pruducto no encontrado"
+           }
+        
+        if (!product) {         
+            res.status(404).send({
+                product
             });
         }
-    } catch (error) {
-
-        if (error.name === 'MongoError') {
-            res.status('400').json({
-                code: error.code,
-                name: error.name,
-                msg: error.message
-            });
-        }
-
-        logger.err('Error interno',);
-        res.status('500').json({
-            msg: error.message
-        });
+    }  catch (error) {
+        return next(error);
     }
 }
 
-const gellAllProduct = async (req = request, res = response) => {
+const gellAllProduct = async (req = request, res = response, next) => {
 
     try {
-        const { limite = 5, desde = 0 } = req.query;
+    const { limite = 5, desde = 0 } = req.query;
+    const products = await productService.gellAllProduct(Number(limite), Number(desde));
 
-        const products = await productService.gellAllProduct(Number(limite), Number(desde));
-
-        if (products) {
-
-            logger.info('Consutlado productos', products.length);
-            res.status('200').json({
-                msg: 'Consultado todos los productos',
-                products,
-            });
+    if (products) {
+            logger.info('Consultando productos', products.length);
+            res.status(200).send({ products});
         }
-
-    } catch (error) {
-
-        if (error.name === 'MongoError') {
-            res.status('400').json({
-                code: error.code,
-                name: error.name,
-                msg: error.message
-            });
-        }
-
-
-        res.status('500').json({
-            msg: error.message
-        });
+    } 
+    
+    catch (error) {
+        return next(error);
     }
 }
 
-
-const updateProduct = async (req = request, res = response) => {
+const updateProduct = async (req = request, res = response, next) => {
     const body = req.body;
     const { code } = body;
+    
     logger.info("Actualizando :--->", body, code);
+    
     try {
         const product = await productService.updateProduct(code, body);
+        
         if (product) {
-            res.status('200').json({
-                msg: 'Procuto Actualizado',
-                product,
-            });
-            logger.info(product.code, product.name);
+            
+            res.status(200).send({product});
+            
         }
         if (!product) {
-            logger.err('Producto no existe',);
-            res.status('400').json({
-                msg: "Pruducto no encontrado"
-            });
+            
+            res.status(400).send({product});
         }
 
-    } catch (error) {
-        if (error.name === 'MongoError') {
-            res.status('400').json({
-                code: error.code,
-                name: error.name,
-                msg: error.message
-            });
-        }
-
-        res.status('500').json({
-            msg: error.message
-        });
-
+    }  catch (error) {
+        return next(error);
     }
 
 }
 
-const saveProduct = async (req, res = response) => {
+const saveProduct = async (req, res = response, next) => {
 
     const body = req.body;
     try {
+        
         const productSave = await productService.saveProduct(body);
+        console.log("Producto ", productSave);
+        
+        res.status(200).send({ productSave });
 
-        console.log("Entre al post", productSave);
-        res.status('200').json({
-            msn: 'Producto guardado',
-            productSave,
-        });
-
-    } catch (error) {
-
-        if (error.name === 'MongoError') {
-            res.status('400').json({
-                code: error.code,
-                name: error.name,
-                msg: error.message
-            });
-        }
-        res.status('500').json({
-            msn: error.message
-
-        });
+    }  catch (error) {
+        return next(error);
     }
 }
 module.exports = {
-    gellAllProduct,
+gellAllProduct,
     getProductByCode,
     saveProduct,
     updateProduct
