@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const router = Router();
-const { check, param, body } = require('express-validator');
-const { validarCampos } = require('../middlewares/valideMiddlewares')
+const { check, param } = require('express-validator');
+const { validarCampos } = require('../middlewares/valideMiddlewares');
 const productController = require('../controllers/productController');
 
 router.get('/:id',

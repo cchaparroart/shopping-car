@@ -14,6 +14,15 @@ const saveShoppingCar = async (req, res = response) => {
             logger.info('Se guardo con existo el carrito de compras', shoppingCar);
         }
     } catch (error) {
+
+        if (error.name === 'MongoError') {
+            res.status('400').json({
+                code: error.code,
+                name: error.name,
+                msg:  error.message
+            });
+        }
+
         res.status('500').json({
             msn: 'Error al guardar el shoppingCar',
             err: error.message
@@ -25,13 +34,13 @@ const appProducCarShopping = async (req, res = response) => {
 
     const body = req.body;
     const { id } = body;
-    const { products } = body;
+    const { product } = body;
 
-    logger.info("Add los productos al carrito", id, products);
+    logger.info("Add los productos al carrito", id, product);
 
     try {
 
-        const shoppingCar = await shoppingCarService.addProductCar(id, products);
+        const shoppingCar = await shoppingCarService.addProducShoppingCar(id, product);
 
         if (shoppingCar) {
             res.status('200').json({
@@ -41,6 +50,15 @@ const appProducCarShopping = async (req, res = response) => {
             logger.info('Se agregaron los productos al carrito', shoppingCar);
         }
     } catch (error) {
+
+        if (error.name === 'MongoError') {
+            res.status('400').json({
+                code: error.code,
+                name: error.name,
+                msg:  error.message
+            });
+        }
+
         res.status('500').json({
             msn: 'Error al guardar el shoppingCar',
             err: error.message
@@ -48,15 +66,13 @@ const appProducCarShopping = async (req, res = response) => {
     }
 }
 
-
-
 const getShoppingCarById = async (req = request, res = response) => {
 
     const param = req.params.id;
     logger.info("Consultado el carrrito con code :", param);
     try {
 
-        const shoppingCar = await saveShoppingCar.getShoppingCarById(param);
+        const shoppingCar = await shoppingCarService.getShoppingCarById(param);
 
         if (shoppingCar) {
             res.status('200').json({
@@ -74,7 +90,14 @@ const getShoppingCarById = async (req = request, res = response) => {
         }
     } catch (error) {
 
-        logger.err('Error interno',);
+        if (error.name === 'MongoError') {
+            res.status('400').json({
+                code: error.code,
+                name: error.name,
+                msg:  error.message
+            });
+        }
+     
         res.status('500').json({
             msg: error.message
         });

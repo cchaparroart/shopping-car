@@ -27,6 +27,14 @@ const getProductByCode = async (req = request, res = response) => {
         }
     } catch (error) {
 
+        if (error.name === 'MongoError') {
+            res.status('400').json({
+                code: error.code,
+                name: error.name,
+                msg: error.message
+            });
+        }
+
         logger.err('Error interno',);
         res.status('500').json({
             msg: error.message
@@ -37,9 +45,9 @@ const getProductByCode = async (req = request, res = response) => {
 const gellAllProduct = async (req = request, res = response) => {
 
     try {
-        const {limite=5 ,desde=0}=req.query;
+        const { limite = 5, desde = 0 } = req.query;
 
-        const products = await productService.gellAllProduct(Number(limite),Number(desde));
+        const products = await productService.gellAllProduct(Number(limite), Number(desde));
 
         if (products) {
 
@@ -51,7 +59,16 @@ const gellAllProduct = async (req = request, res = response) => {
         }
 
     } catch (error) {
-        logger.err('Error interno',);
+
+        if (error.name === 'MongoError') {
+            res.status('400').json({
+                code: error.code,
+                name: error.name,
+                msg: error.message
+            });
+        }
+
+
         res.status('500').json({
             msg: error.message
         });
@@ -80,7 +97,14 @@ const updateProduct = async (req = request, res = response) => {
         }
 
     } catch (error) {
-        logger.err('Error interno', error);
+        if (error.name === 'MongoError') {
+            res.status('400').json({
+                code: error.code,
+                name: error.name,
+                msg: error.message
+            });
+        }
+
         res.status('500').json({
             msg: error.message
         });
@@ -103,13 +127,18 @@ const saveProduct = async (req, res = response) => {
 
     } catch (error) {
 
+        if (error.name === 'MongoError') {
+            res.status('400').json({
+                code: error.code,
+                name: error.name,
+                msg: error.message
+            });
+        }
         res.status('500').json({
             msn: error.message
 
         });
-
     }
-
 }
 module.exports = {
     gellAllProduct,

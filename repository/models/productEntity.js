@@ -1,5 +1,6 @@
 const mongodb = require("@condor-labs/mongodb")();
-const product = mongodb.mongoose.Schema({
+const Schema = mongodb.mongoose.Schema;
+const product = Schema({
     
     code: {
         type: String,
@@ -15,9 +16,9 @@ const product = mongodb.mongoose.Schema({
         required: true,
     },
     category: {
-        type: String,
+        type: Schema.Types.ObjectId,
         required: true,
-        enum: ['FOOD', 'TECH', 'TOYS']
+        ref:'Category'  
     },
 });
 module.exports  = mongodb.mongoose.model('Product', product);

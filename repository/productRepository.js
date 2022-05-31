@@ -6,6 +6,7 @@ const logger = require('@condor-labs/logger');
 
 const getAllProducts = (limite,desde) => Product.find().skip(desde).limit(limite);
 const getProductByCode = async (code) => Product.findOne({ 'code': code });
+const getProductById = async (id) => Product.findById(id);
 const saveProduct = async (body) => {
 
     const product = new Product(body);
@@ -20,5 +21,6 @@ module.exports = {
     getAllProducts,
     getProductByCode,
     saveProduct,
-    updateProduct
+    updateProduct,
+    getProductById
 };

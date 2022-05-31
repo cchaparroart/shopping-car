@@ -1,63 +1,33 @@
 const shoppingCarRepository = require('../repository/shoppingCarRepository');
 const productRepository = require('../repository/productRepository');
 const logger = require('@condor-labs/logger');
-const { log } = require('@condor-labs/logger');
 
 const getShoppingCarById = (code) => shoppingCarRepository.getShoppingCarId(code);
 const saveShoppingCar = (shopping_car) => shoppingCarRepository.saveShoppingCar(shopping_car);
 
-const addProductCar = async (cod, productsAdd) => {
-  try {
-    ///Busco el carrito de compras
-    logger.info("Agregando -> :", productsAdd);
-    const shoppingCarBd = await shoppingCarRepository.getShoppingCarId(cod);
-    logger.info("Carro Creado con productos -> :", shoppingCarBd.products);
+const addProducShoppingCar = async (shoppingCarId, productQuantity) => {
 
-    const prodNew = [];
+  logger.info('Agregando los siguiente --->', shoppingCarId, productQuantity);
 
-    if (shoppingCarBd) {
-      const { products } = shoppingCarBd;
-      logger.info("actual tamaño",products.length)
-      if (products.length > 0) {
+  const shoppingCar = await shoppingCarRepository.getShoppingCarId(shoppingCarId);
+  const product = await productRepository.getProductById(productQuantity._id);
+  logger.info('shoppingCar --->', shoppingCar);
+  logger.info('product --->', product);
+  logger.info('productQuantity --->', productQuantity);
+  const itemShopping = {
 
-        for (const prodPar of productsAdd) {
-          for (const prodOld of products) {
-            logger.info("-----> prodPar" + prodPar, "prodPar" + prodOld)
-            if (prodOld.code = prodPar.code) {
-
-              prodNew.push(prodPar);
-            } else {
-              prodNew.push(prodOld);
-            }
-          }
-        }
-        shoppingCarBd.products = prodNew;
-      }
-      else {
-        shoppingCarBd.products = productsAdd;
-
-      }
-      logger.info("Arreglo de productos : -> ", prodNew);
-
-
-      logger.info("Nuevo Carrito -> ", shoppingCarBd);
-
-      return await shoppingCarRepository.updateShoppingCar(cod, shoppingCarBd);
-    }
-    else {
-
-      throw new Error('El carrito de compras no existe');
-    }
-
-  } catch (error) {
-
-    throw error;
+    '_id': product._id,
+    'quantity': productQuantity.quantity
   }
-}
-const deleteProductCar = (cod, products) => productRepository.updateProduct(code, product);
+
+  shoppingCar.products.push(itemShopping);
+  logger.info('ShoppingCar nuevo --->', shoppingCar);
+  const shoppingCarNew = await shoppingCarRepository.updateShoppingCar(shoppingCarId, shoppingCar);
+  return shoppingCarNew;
+};
 
 module.exports = {
   getShoppingCarById,
   saveShoppingCar,
-  addProductCar
+  addProducShoppingCar
 };
