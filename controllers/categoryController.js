@@ -83,9 +83,7 @@ const gellAllCategory = async (req = request, res = response, next) => {
         if (categorys) {
 
             logger.info('Consultando todas la categorias :', categorys.length);
-            res.status(200).send({
-                categorys
-            });
+            res.status(200).send({categorys});
         }
 
     } catch (error) {

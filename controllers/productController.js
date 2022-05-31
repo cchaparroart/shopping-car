@@ -2,10 +2,9 @@ const { response, request  } = require('express');
 const logger = require('@condor-labs/logger');
 const productService = require('../service/productService');
 
-
 const getProductByCode = async (req = request, res = response, next) => {
-
     const param = req.params.id;
+
     logger.info("Consultado productos con code :", param);
     try {
         const product = await productService.getProductByCode(param);
@@ -35,7 +34,7 @@ const gellAllProduct = async (req = request, res = response, next) => {
 
     if (products) {
             logger.info('Consultando productos', products.length);
-            res.status(200).send({ products});
+            res.status(200).send({products});
         }
     } 
     

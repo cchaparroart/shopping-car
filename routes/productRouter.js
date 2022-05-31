@@ -3,6 +3,7 @@ const router = Router();
 const { check, param } = require('express-validator');
 const { validarCampos } = require('../middlewares/valideMiddlewares');
 const productController = require('../controllers/productController');
+const { existeCategoriaPorId } = require('../helpers/bd-validor');
 
 router.get('/:id',
     param('id', "Tiene que ser un numero ").isNumeric(), validarCampos, productController.getProductByCode);
@@ -17,7 +18,7 @@ router.post('/',
     check('price', 'El precio es obligatorio').notEmpty(),
     check('price', 'El precio tiene que se mayor de 0').isInt({ min: 1 }),
     check('category', 'El campo categoria es obliglatorio').notEmpty(),
-    check('category', 'Solo se puede la siguientes categorias: FOOD,TECH o TOYS').isIn(['FOOD', 'TECH', 'TOYS']),
+    check('category').custom(existeCategoriaPorId),
     validarCampos,
     productController.saveProduct);
 
