@@ -29,4 +29,5 @@ const shopping_car = Schema({
 });
 const modelShoppingCars = mongodb.mongoose.model('shoppingCar', shopping_car);
 
-module.exports = modelShoppingCars;
+
+module.exports = {modelShoppingCars};

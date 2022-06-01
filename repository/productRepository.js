@@ -5,8 +5,8 @@ const redis = require('@condor-labs/redis')(dbSettings.settingsRedis);
 const logger = require('@condor-labs/logger');
 
 const getAllProducts = (limite,desde) => Product.find().skip(desde).limit(limite);
-const getProductByCode = async (code) => Product.findOne({ 'code': code });
-const getProductById = async (id) => Product.findById(id);
+const getProductByCode =  (code) => Product.findOne({ 'code': code });
+const getProductById =  (id) => Product.findById(id);
 const saveProduct = async (body) => {
 
     const product = new Product(body);

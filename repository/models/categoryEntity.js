@@ -4,7 +4,7 @@ const category = Schema({
     code: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
     },
     describe: {
         type: String,

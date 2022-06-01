@@ -19,7 +19,7 @@ class Server {
         this.middlewares();
         this.routes();
         this.middlewaresError();
-    
+
     }
 
     routes() {

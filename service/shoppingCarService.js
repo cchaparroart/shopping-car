@@ -10,6 +10,7 @@ const addProducShoppingCar = async (shoppingCarId, productQuantity) => {
   logger.info('Agregando los siguiente --->', shoppingCarId, productQuantity);
 
   const shoppingCar = await shoppingCarRepository.getShoppingCarId(shoppingCarId);
+  
   const product = await productRepository.getProductById(productQuantity._id);
   logger.info('shoppingCar --->', shoppingCar);
   logger.info('product --->', product);

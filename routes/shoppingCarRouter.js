@@ -3,6 +3,7 @@ const router = Router();
 const { param, check } = require('express-validator');
 const { validarCampos } = require('../middlewares/valideMiddlewares');
 const shoppingCarController = require('../controllers/shoppingCarController');
+const { existeProducto } = require('../helpers/bd-validor');
 
 router.post('/',
     check('code', 'El codigo es obligatorio').notEmpty(),
@@ -12,7 +13,10 @@ router.post('/',
     check('totalPrice', 'El valor total tiene que se mayor o igual 0').isInt({ min: 0 }),
     validarCampos, shoppingCarController.saveShoppingCar);
 
-router.put('/', shoppingCarController.appProducCarShopping);
+router.put('/', 
+check('product').custom(existeProducto),
+validarCampos,
+shoppingCarController.appProducCarShopping);
 
 router.get('/:id', param('id', "La id no es valida ").isMongoId(), validarCampos,
     shoppingCarController.getShoppingCarById);

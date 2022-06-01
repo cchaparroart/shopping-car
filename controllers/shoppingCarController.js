@@ -40,7 +40,7 @@ const appProducCarShopping = async (req, res = response, next) => {
     }
 }
 
-const getShoppingCarById = async (req = request, res = response) => {
+const getShoppingCarById = async (req = request, res = response, next) => {
 
     const param = req.params.id;
     logger.info("Consultado el carrrito con code :", param);
